@@ -43,10 +43,13 @@ def leds_callback(msg) -> None:
 )
         
 if __name__ == '__main__':
-    rospy.init_node("sphero_RVR_driver_node")
-    rospy.Subscriber('sphero/leds', ColorRGBA, leds_callback, queue_size=1)
+    try: 
+        rospy.init_node("sphero_RVR_driver_node")
+        rospy.Subscriber('sphero/leds', ColorRGBA, leds_callback, queue_size=1)
 
-    rate=rospy.Rate(30)
+        rate=rospy.Rate(30)
 
-    while not rospy.is_shutdown():
-        rate.sleep()
+        while not rospy.is_shutdown():
+            rate.sleep()
+    except:
+        pass
