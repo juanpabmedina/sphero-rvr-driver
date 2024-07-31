@@ -39,17 +39,17 @@ rvr = SpheroRvrObserver()
 def leds_callback(msg) -> None:
     rvr.set_all_leds(
     led_group=RvrLedGroups.headlight_right.value,   # 0xe00
-    led_brightness_values=[msg.r, msg.g, msg.b]
+    led_brightness_values=msg
 )
         
 if __name__ == '__main__':
     try: 
         rospy.init_node("sphero_RVR_driver_node")
-        rospy.Subscriber('sphero/leds', ColorRGBA, leds_callback, queue_size=1)
+        rospy.Subscriber('sphero/leds', Vector3, leds_callback, queue_size=1)
 
         rate=rospy.Rate(30)
 
         while not rospy.is_shutdown():
             rate.sleep()
-    except:
+    except rospy.ROSInterruptException:
         pass
