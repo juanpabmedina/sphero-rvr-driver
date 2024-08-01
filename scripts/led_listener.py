@@ -5,6 +5,7 @@ from geometry_msgs.msg import Vector3, Twist
 
 import sys
 import os
+import time
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 import asyncio
@@ -18,11 +19,22 @@ from sphero_sdk import SerialAsyncDal
 rvr = SpheroRvrObserver()
 
 def led_callback(data):
-    rospy.loginfo("I heard %s", round(data.x))
-    rvr.set_all_leds(
-    led_group=RvrLedGroups.headlight_right.value,   # 0xe00
-    led_brightness_values=[round(data.x),round(data.y),round(data.z)]
-)
+    try:
+        rvr.wake()
+
+        # Give RVR time to wake up
+        time.sleep(2)
+        rospy.loginfo("I heard %s", round(data.x))
+        rvr.set_all_leds(
+            led_group=RvrLedGroups.headlight_right.value,   # 0xe00
+            led_brightness_values=[round(data.x),round(data.y),round(data.z)]
+        )
+
+    except KeyboardInterrupt:
+        print('\nProgram terminated with keyboard interrupt.')
+
+    finally:
+        rvr.close()
     
 def listener():
 
