@@ -19,34 +19,12 @@ from sphero_sdk import SerialAsyncDal
 rvr = SpheroRvrObserver()
 
 def right_led_callback(data):
-    
-    rvr.wake()
-
-    # Give RVR time to wake up
-    time.sleep(2)
-    rospy.loginfo("I heard %s", round(data.x))
     rvr.set_all_leds(
         led_group=RvrLedGroups.headlight_right.value,   # 0xe00
-        led_brightness_values=[round(data.x),round(data.y),round(data.z)]
-    )
-
-    rvr.set_all_leds(
-        led_group=RvrLedGroups.headlight_left.value,   # 0xe00
         led_brightness_values=[round(data.x),round(data.y),round(data.z)]
     )
 
 def left_led_callback(data):
-    
-    rvr.wake()
-
-    # Give RVR time to wake up
-    time.sleep(2)
-    rospy.loginfo("I heard %s", round(data.x))
-    rvr.set_all_leds(
-        led_group=RvrLedGroups.headlight_right.value,   # 0xe00
-        led_brightness_values=[round(data.x),round(data.y),round(data.z)]
-    )
-
     rvr.set_all_leds(
         led_group=RvrLedGroups.headlight_left.value,   # 0xe00
         led_brightness_values=[round(data.x),round(data.y),round(data.z)]
@@ -69,6 +47,10 @@ def listener():
 
         # spin() simply keeps python from exiting until this node is stopped
         rospy.spin()
+        rate=rospy.Rate(30)
+
+        while not rospy.is_shutdown():
+            rate.sleep()
 
     except KeyboardInterrupt:
         print('\nProgram terminated with keyboard interrupt.')
@@ -77,4 +59,8 @@ def listener():
         rvr.close()
 
 if __name__ == '__main__':
+    rvr.wake()
+
+    # Give RVR time to wake up
+    time.sleep(2)
     listener()
