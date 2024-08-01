@@ -166,6 +166,7 @@ catkin_install_python(PROGRAMS
   scripts/sphero_rvr_driver_node.py
   scripts/led_listener.py
   scripts/led_talker.py
+  scripts/interface_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
