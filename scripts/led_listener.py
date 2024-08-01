@@ -19,22 +19,18 @@ from sphero_sdk import SerialAsyncDal
 rvr = SpheroRvrObserver()
 
 def led_callback(data):
-    try:
-        rvr.wake()
+    
+    rvr.wake()
 
-        # Give RVR time to wake up
-        time.sleep(2)
-        rospy.loginfo("I heard %s", round(data.x))
-        rvr.set_all_leds(
-            led_group=RvrLedGroups.headlight_right.value,   # 0xe00
-            led_brightness_values=[round(data.x),round(data.y),round(data.z)]
-        )
+    # Give RVR time to wake up
+    time.sleep(2)
+    rospy.loginfo("I heard %s", round(data.x))
+    rvr.set_all_leds(
+        led_group=RvrLedGroups.headlight_right.value,   # 0xe00
+        led_brightness_values=[round(data.x),round(data.y),round(data.z)]
+    )
 
-    except KeyboardInterrupt:
-        print('\nProgram terminated with keyboard interrupt.')
 
-    finally:
-        rvr.close()
     
 def listener():
 
@@ -43,12 +39,19 @@ def listener():
     # anonymous=True flag means that rospy will choose a unique
     # name for our 'listener' node so that multiple listeners can
     # run simultaneously.
-    rospy.init_node('rvr_led_listener_node')
+    try:
+        rospy.init_node('rvr_led_listener_node')
 
-    rospy.Subscriber("led_color", Vector3, led_callback)
+        rospy.Subscriber("led_color", Vector3, led_callback)
 
-    # spin() simply keeps python from exiting until this node is stopped
-    rospy.spin()
+        # spin() simply keeps python from exiting until this node is stopped
+        rospy.spin()
+
+    except KeyboardInterrupt:
+        print('\nProgram terminated with keyboard interrupt.')
+
+    finally:
+        rvr.close()
 
 if __name__ == '__main__':
     listener()
