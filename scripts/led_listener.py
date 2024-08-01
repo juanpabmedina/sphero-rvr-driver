@@ -18,7 +18,7 @@ from sphero_sdk import SerialAsyncDal
 
 rvr = SpheroRvrObserver()
 
-def led_callback(data):
+def right_led_callback(data):
     
     rvr.wake()
 
@@ -27,6 +27,28 @@ def led_callback(data):
     rospy.loginfo("I heard %s", round(data.x))
     rvr.set_all_leds(
         led_group=RvrLedGroups.headlight_right.value,   # 0xe00
+        led_brightness_values=[round(data.x),round(data.y),round(data.z)]
+    )
+
+    rvr.set_all_leds(
+        led_group=RvrLedGroups.headlight_left.value,   # 0xe00
+        led_brightness_values=[round(data.x),round(data.y),round(data.z)]
+    )
+
+def left_led_callback(data):
+    
+    rvr.wake()
+
+    # Give RVR time to wake up
+    time.sleep(2)
+    rospy.loginfo("I heard %s", round(data.x))
+    rvr.set_all_leds(
+        led_group=RvrLedGroups.headlight_right.value,   # 0xe00
+        led_brightness_values=[round(data.x),round(data.y),round(data.z)]
+    )
+
+    rvr.set_all_leds(
+        led_group=RvrLedGroups.headlight_left.value,   # 0xe00
         led_brightness_values=[round(data.x),round(data.y),round(data.z)]
     )
 
@@ -42,7 +64,8 @@ def listener():
     try:
         rospy.init_node('rvr_led_listener_node')
 
-        rospy.Subscriber("led_color", Vector3, led_callback)
+        rospy.Subscriber("led_color/right", Vector3, right_led_callback)
+        rospy.Subscriber("led_color/left", Vector3, left_led_callback)
 
         # spin() simply keeps python from exiting until this node is stopped
         rospy.spin()
