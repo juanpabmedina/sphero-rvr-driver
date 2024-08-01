@@ -167,6 +167,8 @@ catkin_install_python(PROGRAMS
   scripts/led_listener.py
   scripts/led_talker.py
   scripts/interface_node.py
+  scripts/keyboard_control_node.py
+  scripts/keyboard_drive_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
