@@ -25,6 +25,7 @@ class SpheroRVR():
         # init ROS node
         rospy.init_node("sphero_RVR_driver_node")
         self.rvr = SpheroRvrObserver()
+        self.setup_rvr_parameters()
        
 
     def setup_rvr_parameters(self):
@@ -46,10 +47,11 @@ class SpheroRVR():
 
     def drive_callback(self, data):
         # rospy.loginfo(data)
+        self.drive_rvr = Vector3(round(data.x), round(data.y), round(data.z))
         self.rvr.drive_with_heading(round(data.x), round(data.y), round(data.z))    
 
     def right_led_callback(self,data):
-        # rospy.loginfo(data)
+        # rospy.loginfo(data)   
         self.rvr.set_all_leds(
             led_group=RvrLedGroups.headlight_right.value,   # 0xe00
             led_brightness_values=[round(data.x),round(data.y),round(data.z)]
@@ -72,6 +74,10 @@ class SpheroRVR():
     def publisher_callback(self, event=None):
         self.publish_battery_percentage()
 
+    def set_drive_rvr(self):
+        self.rvr.drive_with_heading(self.drive_rvr.x, self.drive_rvr.y, self.drive_rvr.y)
+
+        
     def control_loop_callback(self, event=None):
         self.drive_callback()
 
