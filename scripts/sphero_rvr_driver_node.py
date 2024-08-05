@@ -22,13 +22,15 @@ class SpheroRVR():
         # init ROS node
         rospy.init_node("sphero_RVR_driver_node")
         self.rvr = SpheroRvrObserver()
+        self.create_ros_publishers()
+        self.create_ros_subscribers()
 
     def create_ros_subscribers(self) -> None:
         # Drive robot (velocity, heading, flags) 
         rospy.Subscriber('rvr/drive', Vector3, self.drive_callback, queue_size=1)
         # Leds
-        rospy.Subscriber('rvr/right_led', Twist, self.right_led_callback, queue_size=1)
-        rospy.Subscriber('rvr/left_led', Twist, self.left_led_callback, queue_size=1)        
+        rospy.Subscriber('rvr/right_led', Vector3, self.right_led_callback, queue_size=1)
+        rospy.Subscriber('rvr/left_led', Vector3, self.left_led_callback, queue_size=1)        
 
     def create_ros_publishers(self) -> None:
         self.pub_battery_percentage = rospy.Publisher('rvr/battery', bool, queue_size=1)
