@@ -32,6 +32,9 @@ class SpheroRVR():
         self.create_ros_publishers()
         self.create_ros_subscribers()
 
+        init_rvr_drive= [0,0,0]
+        self.drive_rvr = Vector3(init_rvr_drive[0],init_rvr_drive[1],init_rvr_drive[2])
+
         # Publishing timer
         rospy.Timer(
             rospy.Duration(self.PERIOD_PUBLISH_CALLBACK), self.publisher_callback)
@@ -45,7 +48,7 @@ class SpheroRVR():
         rospy.Subscriber('rvr/right_led', Vector3, self.right_led_callback, queue_size=1)
         rospy.Subscriber('rvr/left_led', Vector3, self.left_led_callback, queue_size=1)        
 
-    def drive_callback(self, data) -> None:
+    def drive_callback(self, data):
         # rospy.loginfo(data)
         self.drive_rvr = Vector3(round(data.x), round(data.y), round(data.z)) 
 
