@@ -133,7 +133,7 @@ def run_loop():
 #         rate.sleep()
 
 if __name__ == '__main__':
-    drive_pub = rospy.Publisher('rvr_drive', Vector3, queue_size=10)
+    drive_pub = rospy.Publisher('rvr/drive', Vector3, queue_size=10)
     rospy.init_node('keyboard_control_node')
     loop.run_in_executor(None, key_helper.get_key_continuous)
     try:

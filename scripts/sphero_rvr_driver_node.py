@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # license removed for brevity
 import rospy
-from std_msgs.msg import String, ColorRGBA
+from std_msgs.msg import String, ColorRGBA, Bool
 from geometry_msgs.msg import Vector3, Twist
 
 import sys
@@ -17,13 +17,25 @@ from sphero_sdk import SerialAsyncDal
 
 class SpheroRVR():
 
+    PERIOD_PUBLISH_CALLBACK: float = 0.1
+    PERIOD_CONTROL_CALLBACK: float = 0.25
+
     def __init__(self) -> None:
 
         # init ROS node
         rospy.init_node("sphero_RVR_driver_node")
         self.rvr = SpheroRvrObserver()
+       
+
+    def setup_rvr_parameters(self):
         self.create_ros_publishers()
         self.create_ros_subscribers()
+
+        # Publishing timer
+        rospy.Timer(
+            rospy.Duration(self.PERIOD_PUBLISH_CALLBACK), self.publisher_callback)
+        rospy.Timer(
+            rospy.Duration(self.PERIOD_CONTROL_CALLBACK), self.control_loop_callback)
 
     def create_ros_subscribers(self) -> None:
         # Drive robot (velocity, heading, flags) 
@@ -31,9 +43,6 @@ class SpheroRVR():
         # Leds
         rospy.Subscriber('rvr/right_led', Vector3, self.right_led_callback, queue_size=1)
         rospy.Subscriber('rvr/left_led', Vector3, self.left_led_callback, queue_size=1)        
-
-    def create_ros_publishers(self) -> None:
-        self.pub_battery_percentage = rospy.Publisher('rvr/battery', bool, queue_size=1)
 
     def drive_callback(self, data):
         # rospy.loginfo(data)
@@ -53,9 +62,20 @@ class SpheroRVR():
             led_brightness_values=[round(data.x),round(data.y),round(data.z)]
         )
 
+    def create_ros_publishers(self) -> None:
+        self.pub_battery_percentage = rospy.Publisher('rvr/battery', Bool, queue_size=1)
+
     def publish_battery_percentage(self):
         battery_percentage_msg = self.rvr.get_battery_percentage()
         self.pub_battery_percentage.publish(battery_percentage_msg)
+
+    def publisher_callback(self, event=None):
+        self.publish_battery_percentage()
+
+    def control_loop_callback(self, event=None):
+        self.drive_callback()
+
+
 
         
 if __name__ == "__main__":
