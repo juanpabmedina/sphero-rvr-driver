@@ -28,7 +28,7 @@ class SpheroRVR():
         self.setup_rvr_parameters()
        
 
-    def setup_rvr_parameters(self):
+    def setup_rvr_parameters(self) -> None:
         self.create_ros_publishers()
         self.create_ros_subscribers()
 
@@ -45,19 +45,18 @@ class SpheroRVR():
         rospy.Subscriber('rvr/right_led', Vector3, self.right_led_callback, queue_size=1)
         rospy.Subscriber('rvr/left_led', Vector3, self.left_led_callback, queue_size=1)        
 
-    def drive_callback(self, data):
+    def drive_callback(self, data) -> None:
         # rospy.loginfo(data)
-        self.drive_rvr = Vector3(round(data.x), round(data.y), round(data.z))
-        self.rvr.drive_with_heading(round(data.x), round(data.y), round(data.z))    
+        self.drive_rvr = Vector3(round(data.x), round(data.y), round(data.z)) 
 
-    def right_led_callback(self,data):
+    def right_led_callback(self,data) -> None:
         # rospy.loginfo(data)   
         self.rvr.set_all_leds(
             led_group=RvrLedGroups.headlight_right.value,   # 0xe00
             led_brightness_values=[round(data.x),round(data.y),round(data.z)]
         )
 
-    def left_led_callback(self,data):
+    def left_led_callback(self,data) -> None:
         rospy.loginfo(data)
         self.rvr.set_all_leds(
             led_group=RvrLedGroups.headlight_left.value,   # 0xe00
@@ -77,9 +76,9 @@ class SpheroRVR():
     def set_drive_rvr(self):
         self.rvr.drive_with_heading(self.drive_rvr.x, self.drive_rvr.y, self.drive_rvr.y)
 
-        
+
     def control_loop_callback(self, event=None):
-        self.drive_callback()
+        self.set_drive_rvr()
 
 
 
