@@ -3,6 +3,7 @@
 import rospy
 from std_msgs.msg import String, ColorRGBA, Bool
 from geometry_msgs.msg import Vector3, Twist
+import time
 
 import sys
 import os
@@ -22,9 +23,14 @@ class SpheroRVR():
 
     def __init__(self) -> None:
 
+        
         # init ROS node
         rospy.init_node("sphero_RVR_driver_node")
+        # RVR SDK
         self.rvr = SpheroRvrObserver()
+        self.rvr.wake()
+        # Give RVR time to wake up
+        time.sleep(2)
         self.setup_rvr_parameters()
        
 
@@ -87,7 +93,7 @@ class SpheroRVR():
 
         
 if __name__ == "__main__":
-
+    
     try:
         sphero_rvr = SpheroRVR()
         rospy.spin()
