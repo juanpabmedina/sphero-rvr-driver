@@ -118,20 +118,6 @@ def run_loop():
         )
     )
 
-# def talker():
-
-#     global loop
-#     global key_helper
-#     key_helper.set_callback(keycode_callback)
-
-
-#     rate = rospy.Rate(10) # 10hz
-#     while not rospy.is_shutdown():
-#         main()
-#         rospy.loginfo(Vector3(speed,heading,flags))
-#         drive_pub.publish(Vector3(speed,heading,flags))
-#         rate.sleep()
-
 if __name__ == '__main__':
     drive_pub = rospy.Publisher('rvr/drive', Vector3, queue_size=10)
     rospy.init_node('keyboard_control_node')
