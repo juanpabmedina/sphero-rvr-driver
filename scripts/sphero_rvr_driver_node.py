@@ -88,7 +88,7 @@ class SpheroRVR():
         self.publish_battery_percentage()
 
     def set_drive_rvr(self):
-        self.rvr.drive_with_heading(self.drive_rvr.x, self.drive_rvr.y, self.drive_rvr.y)
+        self.rvr.drive_with_heading(self.drive_rvr.x, self.drive_rvr.y, self.drive_rvr.z)
 
     def control_loop_callback(self, event=None):
         self.set_drive_rvr()
